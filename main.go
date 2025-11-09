@@ -45,6 +45,8 @@ func main() {
 	//telling the v1 router that if /healthz is called with get then call this function
 	v1Router.Get("/healtz", handlerReadiness)
 
+	//for error go on this route
+	v1Router.Get("/err", handlerErr)
 	//mount connects the main router with v1router so if request with /v1 comes it is handed to v1router
 	router.Mount("/v1", v1Router)
 

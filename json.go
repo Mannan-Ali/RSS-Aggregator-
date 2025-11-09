@@ -32,9 +32,16 @@ func responseWithError(w http.ResponseWriter, code int, msg string) {
 	if code > 499 {
 		log.Println("Responding with 5XX error:", msg)
 	}
+	//`json:"error"` this is a key and we are telling the marshal function to match it with the json error key when passed
+	// 	The json.Marshal function would turn the Go string "Something went wrong" into a JSON string "Something went wrong".
+	// The raw HTTP response body would look like this: "Something went wrong"
 	type errResponse struct {
 		Error string `json:"error"`
 	}
+	//  with adding struct
+	// 	{
+	//     "error": "Something went wrong"
+	// }
 	responseWithJSON(w, code, errResponse{
 		Error: msg,
 	})
