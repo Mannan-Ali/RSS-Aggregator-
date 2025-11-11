@@ -1,4 +1,4 @@
--- name : CreateUser : one
-INSERT INTO USERS (ID,CREATE_ID,UPDATE_AT,NAME)
+-- name: CreateUser :one
+INSERT INTO USERS (ID,CREATED_AT,UPDATED_AT,NAME)
 VALUES ($1,$2,$3,$4)
 RETURNING *;

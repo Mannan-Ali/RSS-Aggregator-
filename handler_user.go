@@ -1,0 +1,38 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+
+	"github.com/Mannan-Ali/RSS-Aggregator/internal/database"
+	"github.com/google/uuid"
+)
+
+// the main purpose of this function is to take data from the user request and use it to call the database functoin user it acts as a brigde
+func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) {
+	type parameters struct {
+		Name string `json:"name"`
+	}
+	//parsing the req body
+	decoder := json.NewDecoder(r.Body)
+	params := parameters{}
+	err := decoder.Decode(&params)
+	if err != nil {
+		responseWithError(w, 400, fmt.Sprintf("Error parsing JSON: %v", err))
+		return
+	}
+	// apiCfg.DB gives you access to the collection of all your pre-defined and type-safe database functions.
+	user, err := apiCfg.DB.CreateUser(r.Context(), database.CreateUserParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
+		Name:      params.Name,
+	})
+	if err != nil {
+		responseWithError(w, 400, fmt.Sprintf("Error creating user: %v", err))
+		return
+	}
+	responseWithJSON(w, 201, databaseUsertoUser(user))
+}
