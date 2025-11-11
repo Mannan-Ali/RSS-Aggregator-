@@ -4,4 +4,3 @@ about.txt
 /vendor
 sql/schema/goose.txt
 sql/queries/sqlc.txt
-/internal
