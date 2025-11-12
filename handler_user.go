@@ -7,12 +7,12 @@ import (
 	"time"
 
 	"github.com/Mannan-Ali/RSS-Aggregator/internal/database"
-	"github.com/Mannan-Ali/RSS-Aggregator/internal/database/auth"
 	"github.com/google/uuid"
 )
 
 // the main purpose of this function is to take data from the user request and use it to call the database functoin user it acts as a brigde
 func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) {
+	//this are the parameters we get from req body
 	type parameters struct {
 		Name string `json:"name"`
 	}
@@ -38,19 +38,11 @@ func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Reques
 	responseWithJSON(w, 201, databaseUsertoUser(user))
 }
 
-func (apiCfg *apiConfig) handlerGetUserByAPIKey(w http.ResponseWriter, r *http.Request) {
-	//now to create an user the people dont actually need apikeys as we are generationg for them
-	//but to getUsers or your own data will require an api key
-	//we always use package name as prefix before calling a function we a different package is useds
-	apiKey, err := auth.GetAPIKey(r.Header)
-	if err != nil {
-		responseWithError(w, 403, fmt.Sprintf("Auth error: %v", err))
-		return
-	}
-	user, err := apiCfg.DB.GetUserByAPIKey(r.Context(), apiKey)
-	if err != nil {
-		responseWithError(w, 400, fmt.Sprintf("Couldn't get user: %v", err))
-		return
-	}
+func (apiCfg *apiConfig) handlerGetUserByAPIKey(w http.ResponseWriter, r *http.Request, user database.User) {
+	//this function now gets called in middlewareAuth with authenticatedUser
+
+	//the whole code here was made into middleware (middleware_auth_handler) so can be used multiple times
+	//now we made this functoin  to match the signature of the middlware auth handler (authedHander) by adding userdatabase.user
+	// so it can be passed in middlewareAuth function
 	responseWithJSON(w, 200, databaseUsertoUser(user))
 }
