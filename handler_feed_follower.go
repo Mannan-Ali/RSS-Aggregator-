@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Mannan-Ali/RSS-Aggregator/internal/database"
+	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 )
 
@@ -45,4 +46,21 @@ func (apiCfg *apiConfig) handlerGetAllFollowersFeeds(w http.ResponseWriter, r *h
 		return
 	}
 	responseWithJSON(w, 201, databaseUserFeedstoUserFeeds(allUserFeeds))
+}
+func (apiCfg *apiConfig) handlerUnfollowUserFeed(w http.ResponseWriter, r *http.Request, user database.User) {
+
+	feedFllowIdStr := chi.URLParam(r, "feedFollowID")
+	feedIdToUnfollow, err := uuid.Parse(feedFllowIdStr)
+	if err != nil {
+		responseWithError(w, 400, fmt.Sprintf("Coudn't parse feed id to be unfollowed : %v", err))
+	}
+	err = apiCfg.DB.UnfollowUserFeed(r.Context(), database.UnfollowUserFeedParams{
+		ID:     feedIdToUnfollow,
+		UserID: user.ID,
+	})
+	if err != nil {
+		responseWithError(w, 400, fmt.Sprintf("Coudn't unfollow feed : %v", err))
+		return
+	}
+	responseWithJSON(w, 200, struct{}{})
 }
