@@ -83,6 +83,7 @@ func main() {
 	v1Router.Post("/feedFollows", apiCfg.middlewareAuth(apiCfg.handlerCreateFeedFollower))
 	v1Router.Get("/getAllUserFeeds", apiCfg.middlewareAuth(apiCfg.handlerGetAllFollowersFeeds))
 	v1Router.Delete("/unfollowFeed/{feedFollowID}", apiCfg.middlewareAuth(apiCfg.handlerUnfollowUserFeed))
+	v1Router.Get("/posts", apiCfg.middlewareAuth(apiCfg.handlerGetPostsForUser))
 
 	//mount connects the main router with v1router so if request with /v1 comes it is handed to v1router
 	router.Mount("/v1", v1Router)

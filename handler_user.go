@@ -46,3 +46,16 @@ func (apiCfg *apiConfig) handlerGetUserByAPIKey(w http.ResponseWriter, r *http.R
 	// so it can be passed in middlewareAuth function
 	responseWithJSON(w, 200, databaseUsertoUser(user))
 }
+
+func (apiCfg *apiConfig) handlerGetPostsForUser(w http.ResponseWriter, r *http.Request, user database.User) {
+	posts, err := apiCfg.DB.GetNewPostForUser(r.Context(), database.GetNewPostForUserParams{
+		UserID: user.ID,
+		Limit:  10,
+	})
+	if err != nil {
+		responseWithError(w, 400, fmt.Sprintf("Coudnt get new posts: %v", err))
+		return
+	}
+	responseWithJSON(w, 201, databasePostsToPosts(posts))
+
+}
