@@ -7,13 +7,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// type User struct {
-// 	ID        uuid.UUID
-// 	CreatedAt time.Time
-// 	UpdatedAt time.Time
-// 	Name      string
-// }
-
 type User struct {
 	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
@@ -32,6 +25,7 @@ func databaseUsertoUser(dbUser database.User) User {
 	}
 }
 
+//Read about txt point 15
 // so in the createUserfunction we called in handler_user this function creates query and puts it into the database, then as we have returning*;
 // in our query so we get returned with whatever is stored in user now then we
 // pass this to databaseusertouser function where we assign it to a new struct user as we want same nameing convention as the

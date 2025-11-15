@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/Mannan-Ali/RSS-Aggregator/internal/database"
 	"github.com/go-chi/chi"
@@ -45,10 +46,12 @@ func main() {
 
 	//this apiconfig now can be passed into different function and they will have access to our database
 	//apiconfig allows us to use the functions we created using sql queires
+	db := database.New(cons)
 	apiCfg := apiConfig{
-		DB: database.New(cons),
+		DB: db,
 	}
 
+	go startScraping(db, 10, time.Minute)
 	//setting up cors
 	//this setting allows any request from any website
 	router.Use(cors.Handler(cors.Options{
